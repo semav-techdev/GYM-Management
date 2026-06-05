@@ -1,0 +1,12 @@
+from sqlalchemy import Column, Integer, String
+from ..core.database import Base
+
+#admin table 
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    userName = Column(String, unique=True, index=True)
+
+    password = Column(String)
