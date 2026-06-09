@@ -33,13 +33,32 @@ export default function EntityModal({
                 className="block text-sm font-medium text-gray-200"
                 >
                 {field.label}
-                <input
-                    type={field.type || "text"}
-                    name={field.name}
-                    value={formData[field.name] ?? ""}
-                    onChange={onChange}
-                    className="mt-2 w-full rounded-lg border border-white/20 bg-gray-800 px-3 py-2 text-white outline-none focus:border-red-500"
-                />
+                {field.type === "select" ? (
+                    <select
+                        name={field.name}
+                        value={formData[field.name] ?? ""}
+                        onChange={onChange}
+                        disabled={field.loading}
+                        className="mt-2 w-full rounded-lg border border-white/20 bg-gray-800 px-3 py-2 text-white outline-none focus:border-red-500 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        <option value="">
+                        {field.loading ? "Loading..." : `Select ${field.label}`}
+                        </option>
+                        {(field.options ?? []).map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                        ))}
+                    </select>
+                ) : (
+                    <input
+                        type={field.type || "text"}
+                        name={field.name}
+                        value={formData[field.name] ?? ""}
+                        onChange={onChange}
+                        className="mt-2 w-full rounded-lg border border-white/20 bg-gray-800 px-3 py-2 text-white outline-none focus:border-red-500"
+                    />
+                )}
                 </label>
             ))}
             </div>

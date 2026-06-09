@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Float, Integer, String
+from sqlalchemy import Boolean, Column, Float, Integer, String,Date
 from app.core.database import Base
 
 class Employee(Base):
@@ -9,6 +9,6 @@ class Employee(Base):
     role = Column(String)
     phone = Column(String)
     salary = Column(Float)
-    hire_date = Column(String)
+    hire_date = Column(Date)
     is_active = Column(Boolean, default=True)
     specialization = Column(String)

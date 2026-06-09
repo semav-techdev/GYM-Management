@@ -5,12 +5,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from .core.database import engine
 from .core.database import Base ,get_db
 from .models.users import User
+from .models.plan import Plan
 from .schemas.user import UserCreate
 from .routes.auth import (verify_password,create_access_token,hash_password)
 
 from .routes.member import router as members_router
 from .routes.employe import router as employees_router
-from .routes.equipment import router as equipment_router    
+from .routes.equipment import router as equipment_router
+from .routes.dashboard import router as dashboard_router
+from .routes.weight_records import router as weight_record_router
+from .routes.plan import router as plan_router
 
 Base.metadata.create_all(bind=engine) #Creates all database tables defined in models.py
 
@@ -18,7 +22,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5174"],
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -71,3 +75,6 @@ def login(
 app.include_router(members_router)
 app.include_router(employees_router)
 app.include_router(equipment_router)
+app.include_router(dashboard_router)
+app.include_router(weight_record_router)
+app.include_router(plan_router)

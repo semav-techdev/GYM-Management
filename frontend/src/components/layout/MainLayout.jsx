@@ -17,10 +17,10 @@ export function MainLayout() {
     >
       {/* dark overlay */}
 
-      <SidebarProvider defaultOpen={true}>
+      <SidebarProvider defaultOpen={true} style={{ "--sidebar-width": "18.75rem" }}>
         <div className="relative z-10 flex min-h-screen w-full">
           <AppSidebar />
-          <main className="flex-1 overflow-auto">
+          <main className="h-screen min-w-0 flex-1 overflow-y-auto">
             <Outlet />
           </main>
         </div>

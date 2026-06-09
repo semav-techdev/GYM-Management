@@ -18,6 +18,7 @@ import {
     onEdit,
     onDelete,
     onAdd,
+    onRowClick,
     getItemName = (item) => item.name || item.title || "Item",
     }) {
     if (loading) {
@@ -25,7 +26,7 @@ import {
     }
 
     return (
-        <div className="relative min-h-screen pl-20 pr-5 py-8">
+        <div className="relative min-h-screen px-5 py-8">
         {/* Search */}
         <div className="flex justify-center mb-12">
             <div className="bg-gray-700/80 rounded-full w-full max-w-[650px] px-6 py-4 flex items-center gap-4 backdrop-blur-lg">
@@ -63,7 +64,11 @@ import {
                     className="border-b border-white/20 hover:bg-white/5 transition"
                     >
                     {columns.map((col) => (
-                        <td key={col.key} className="p-4">
+                        <td
+                        key={col.key}
+                        className={`p-4 ${onRowClick ? "cursor-pointer" : ""}`}
+                        onClick={() => onRowClick?.(item, col.key)}
+                        >
                         {col.render ? col.render(item) : item[col.key]}
                         </td>
                     ))}

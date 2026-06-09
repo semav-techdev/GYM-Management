@@ -13,6 +13,7 @@ import {
   Users,
   UserCheck,
   Dumbbell,
+  DollarSign
 } from "lucide-react"
 
 import { useNavigate, useLocation } from "react-router-dom"
@@ -39,6 +40,11 @@ const navItems = [
     id: "equipments",
     icon: Dumbbell,
   },
+  {
+    title:"Plan & Price",
+    id : "plan",
+    icon:DollarSign
+  }
 ]
 
 export function AppSidebar() {
@@ -51,11 +57,6 @@ export function AppSidebar() {
   return (
     <Sidebar
       className="
-      w-75
-      h-screen
-      fixed
-      left-0
-      top-0
       border-none
       bg-black/30
       backdrop-blur-lg
