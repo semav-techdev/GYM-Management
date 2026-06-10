@@ -1,12 +1,14 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import date
 
 class EmployeeCreate(BaseModel):
     name: str
     role: str
     phone: str
     salary: float
-    hire_date: str
+    email: Optional[str] = None
+    hire_date: date
     specialization: Optional[str] = None
 
 class EmployeeResponse(EmployeeCreate):

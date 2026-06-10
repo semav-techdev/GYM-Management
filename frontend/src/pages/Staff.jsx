@@ -9,7 +9,7 @@ const STAFF_FIELDS = [
   { name: "email", label: "Email", type: "email" },
   { name: "phone", label: "Phone" },
   { name: "salary", label: "Salary", type: "number" },
-  { name: "hire_date", label: "Hire Date" },
+  { name: "hire_date", label: "Hire Date" ,type: "date"},
 ];
 
 const STAFF_COLUMNS = [
