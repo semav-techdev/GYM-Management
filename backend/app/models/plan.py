@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, Float, Integer, String
-
+from sqlalchemy.orm import relationship
 from app.core.database import Base
 
 
@@ -12,3 +12,5 @@ class Plan(Base):
     duration = Column(String, default="monthly")
     description = Column(String)
     is_active = Column(Boolean, default=True)
+    
+    members = relationship("Member", back_populates="plan", cascade="all, delete-orphan")

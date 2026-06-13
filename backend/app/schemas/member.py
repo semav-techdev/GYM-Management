@@ -6,7 +6,7 @@ from pydantic import BaseModel
 class MemberCreate(BaseModel):
     name: str
     age: int
-    plan: str
+    plan_id: Optional[int] = None
     join_date: date
     expiry_date: date
     phone: str
@@ -17,7 +17,7 @@ class MemberResponse(BaseModel):
     id: int
     name: str
     age: int
-    plan: str
+    plan_id: Optional[int] = None
     join_date: date
     expiry_date: date
     phone: str

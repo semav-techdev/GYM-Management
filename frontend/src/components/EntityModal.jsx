@@ -55,6 +55,7 @@ export default function EntityModal({
                         type={field.type || "text"}
                         name={field.name}
                         value={formData[field.name] ?? ""}
+                        placeholder={field.placeholder}
                         onChange={onChange}
                         className="mt-2 w-full rounded-lg border border-white/20 bg-gray-800 px-3 py-2 text-white outline-none focus:border-red-500"
                     />

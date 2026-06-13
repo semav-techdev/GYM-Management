@@ -7,9 +7,12 @@ import Members from "./pages/Members";
 import Staff from './pages/Staff'
 import Equipments from './pages/Equipment';
 import Plan from './pages/Plan'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function App() {
   return (
+    <>
     <Routes>
       <Route path="/" element={<LoginPage />} />
       <Route element={<MainLayout/>}>
@@ -25,5 +28,12 @@ export default function App() {
         <Route path="/plan" element={<Plan />} />
       </Route>
     </Routes>
+     <ToastContainer
+        position="top-center"
+        autoClose={3000}
+        pauseOnHover
+      />
+    </>
+    
   )
 }

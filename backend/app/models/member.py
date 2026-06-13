@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Date, Integer, String
+from sqlalchemy import Boolean, Column, Date, Integer, String,ForeignKey
 from sqlalchemy.orm import relationship
 from app.core.database import Base
 
@@ -8,7 +8,7 @@ class Member(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     age = Column(Integer)
-    plan = Column(String)
+    plan_id = Column(Integer, ForeignKey("plans.id"), nullable=True)
     join_date = Column(Date)
     expiry_date = Column(Date)
     is_active = Column(Boolean, default=True)
@@ -16,5 +16,5 @@ class Member(Base):
     notes = Column(String)
     actions = Column(String)
     
-    # Add this relationship
+    plan = relationship("Plan", back_populates="members")
     weight_records = relationship("WeightRecord", back_populates="member", cascade="all, delete-orphan")

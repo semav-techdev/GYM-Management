@@ -7,6 +7,20 @@ from app.schemas.equipment import EquipmentCreate, EquipmentResponse
 
 router = APIRouter(prefix="/equipment")
 
+
+def clean_equipment_data(data: dict) -> dict:
+    """Convert empty strings to None for date fields"""
+    cleaned = {}
+    for key, value in data.items():
+        # Convert empty strings to None
+        if value == "":
+            cleaned[key] = None
+        else:
+            cleaned[key] = value
+    return cleaned
+
+
+
 @router.post("/", response_model=EquipmentResponse)
 def create_equipment(equipment: EquipmentCreate, db: Session = Depends(get_db)):
     data = equipment.dict()
@@ -29,6 +43,7 @@ def update_equipment(id: int, equipment: EquipmentCreate, db: Session = Depends(
     db_equipment = db.query(Equipment).filter(Equipment.id == id).first()
     data = equipment.dict()
     # Only update attributes that exist on the model
+    data = clean_equipment_data(data)
     allowed = {"name", "type", "quantity", "location", "last_maintenance_date", "notes", "status"}
     for key, value in data.items():
         if key in allowed:

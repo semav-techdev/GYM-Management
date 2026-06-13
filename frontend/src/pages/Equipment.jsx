@@ -2,7 +2,10 @@ import useCrud from "../hooks/useCrud";
 import equipmentService from "../services/equipmentService";
 import DataTable from "../components/DataTable";
 import EntityModal from "../components/EntityModal";
-
+import {
+  notifySuccess,
+  notifyWarning,
+} from "../utils/toast";
 const EQUIPMENT_FIELDS = [
   {
     name: "name",
@@ -15,41 +18,20 @@ const EQUIPMENT_FIELDS = [
     placeholder: "Cardio / Strength / Machine / Free weights"
   },
   {
-    name: "model",
-    label: "Model",
-    placeholder: "e.g. Technogym Run 700"
-  },
-  {
     name: "quantity",
     label: "Quantity",
     type: "number",
     placeholder: "Number of units (e.g. 5)"
   },
-  {
-    name: "condition",
-    label: "Condition",
-    placeholder: "New / Good / Worn / Damaged"
-  },
+
   {
     name: "status",
     label: "Status",
     placeholder: "Active / Maintenance / Broken / Retired"
   },
   {
-    name: "purchase_date",
-    label: "Purchase Date",
-    type: "date",
-    placeholder: "Select purchase date"
-  },
-  {
     name: "last_maintenance_date",
     label: "Last Maintenance Date",
-    type: "date",
-    placeholder: "Optional"
-  },
-  {
-    name: "next_maintenance_date",
-    label: "Next Maintenance Date",
     type: "date",
     placeholder: "Optional"
   },
@@ -68,9 +50,6 @@ const EQUIPMENT_FIELDS = [
 const EQUIPMENT_COLUMNS = [
   { key: "name", label: "NAME" },
   { key: "type", label: "TYPE" },
-  { key: "model", label: "MODEL" },
-  { key: "purchase_date", label: "PURCHASED" },
-  { key: "condition", label: "CONDITION" },
   { key: "status", label: "STATUS" },
   { key: "quantity", label: "QTY" },
   { key: "location", label: "LOCATION" },
@@ -79,13 +58,9 @@ const EQUIPMENT_COLUMNS = [
 const EMPTY_EQUIPMENT = {
   name: "",
   type: "",
-  model: "",
   quantity: "",
-  condition: "",
   status: "",
-  purchase_date: "",
   last_maintenance_date: "",
-  next_maintenance_date: "",
   location: "",
   notes: "",
 };
@@ -109,18 +84,38 @@ export default function Equipment() {
     handleInputChange,
   } = useCrud(equipmentService);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.name) {
+      notifyWarning("Please enter a name");
+      return;
+    }
+
+    if (!formData.type) {
+      notifyWarning("Please select a type");
+      return;
+    }
+
+    if (!formData.quantity) {
+      notifyWarning("Please enter a quantity");
+      return;
+    }
+    if (!formData.status) {
+      notifyWarning("Please select a status");
+      return;
+    }
     const payload = {
       ...formData,
       quantity: Number(formData.quantity),
     };
 
     if (editingItem) {
-      updateItem(editingItem.id, payload);
+      await updateItem(editingItem.id, payload);
+      notifySuccess("Equipment updated successfully");
     } else {
-      addItem(payload);
+      await addItem(payload);
+      notifySuccess("Equipment added successfully");
     }
   };
 

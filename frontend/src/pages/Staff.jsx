@@ -2,6 +2,11 @@ import useCrud from "../hooks/useCrud";
 import staffService from "../services/staffService";
 import DataTable from "../components/DataTable";
 import EntityModal from "../components/EntityModal";
+import {
+  notifySuccess,
+  notifyError,
+  notifyWarning,
+} from "../utils/toast";
 
 const STAFF_FIELDS = [
   { name: "name", label: "Name" },
@@ -48,17 +53,31 @@ export default function Staff() {
     handleInputChange,
   } = useCrud(staffService);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.name) {
+    notifyWarning("Please select a name");
+    return;
+    }
+    if (!formData.role) {
+    notifyWarning("Please select a role");
+    return;
+    }
+    if (!formData.salary) {
+    notifyWarning("Please select a salary");
+    return;
+    }
     const payload = {
       ...formData,
       salary: Number(formData.salary),
     };
 
     if (editingItem) {
-      updateItem(editingItem.id, payload);
+      await updateItem(editingItem.id, payload);
+      notifySuccess("Staff member updated successfully");
     } else {
-      addItem(payload);
+      await addItem(payload);
+      notifySuccess("Staff member added successfully");
     }
   };
 

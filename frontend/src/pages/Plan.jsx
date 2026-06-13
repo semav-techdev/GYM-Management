@@ -14,6 +14,8 @@ export default function Plans() {
     duration: "monthly",
     description: "",
   });
+  const [showMembersModal, setShowMembersModal] = useState(false);
+  const [membersUsingPlan, setMembersUsingPlan] = useState([]);
 
   useEffect(() => {
     loadPlans();
@@ -72,6 +74,15 @@ export default function Plans() {
       loadPlans();
     } catch (error) {
       console.error("Failed to delete:", error);
+      
+      // Check if error is due to members using the plan
+      if (error.response?.status === 409 && error.response?.data?.detail?.members) {
+        const errorDetail = error.response.data.detail;
+        setMembersUsingPlan(errorDetail.members || []);
+        setShowMembersModal(true);
+      } else {
+        alert("Failed to delete plan");
+      }
     }
   };
 
@@ -179,6 +190,37 @@ export default function Plans() {
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Members Using Plan Modal */}
+      {showMembersModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
+            <h2 className="text-xl font-bold mb-4 text-red-600">Cannot Delete Plan</h2>
+            <p className="text-gray-700 mb-4">
+              This plan cannot be deleted because the following members are using it:
+            </p>
+            
+            <div className="space-y-2 mb-4">
+              {membersUsingPlan.map((member) => (
+                <div
+                  key={member.id}
+                  className="bg-gray-100 p-3 rounded border-l-4 border-red-500"
+                >
+                  <p className="font-medium text-gray-800">{member.name}</p>
+                  <p className="text-sm text-gray-500">ID: {member.id}</p>
+                </div>
+              ))}
+            </div>
+            
+            <button
+              onClick={() => setShowMembersModal(false)}
+              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
 

@@ -5,11 +5,15 @@ import planService from "../services/planService";
 import DataTable from "../components/DataTable";
 import EntityModal from "../components/EntityModal";
 import WeightCalendarCard from "../components/WeightCalendarCard";
+import {
+  notifySuccess,
+  notifyWarning,
+} from "../utils/toast";
 
 const MEMBER_COLUMNS = [
   { key: "name", label: "NAME" },
   { key: "age", label: "AGE" },
-  { key: "plan", label: "PLAN" },
+  { key: "plan", label: "PLAN" }, // This expects plan.plan_name or plan.name from response
   { key: "join_date", label: "JOIN DATE" },
   { key: "expiry_date", label: "EXPIRE DATE" },
   {
@@ -18,7 +22,6 @@ const MEMBER_COLUMNS = [
     render: (item) => (item.is_active ? "Active" : "Inactive"),
   },
   { key: "phone", label: "PHONE" },
-  // NEW: Weight column that opens the calendar card
   {
     key: "weight",
     label: "WEIGHT",
@@ -33,12 +36,13 @@ const MEMBER_COLUMNS = [
 const EMPTY_MEMBER = {
   name: "",
   age: "",
-  plan: "",
+  plan_id: "", // Changed from "plan" to "plan_id"
   join_date: "",
   expiry_date: "",
   phone: "",
   notes: "",
   actions: "",
+  is_active: true, // Add default
 };
 
 export default function Members() {
@@ -81,52 +85,86 @@ export default function Members() {
   }, []);
 
   const memberFields = useMemo(() => [
-    { name: "name", label: "Name" },
-    { name: "age", label: "Age", type: "number" },
+    { name: "name", label: "Name", placeholder: "Member's full name" },
+    { name: "age", label: "Age", type: "number", placeholder: "e.g. 25" },
     {
-      name: "plan",
+      name: "plan_id", // Keep as plan_id
       label: "Plan",
       type: "select",
       loading: plansLoading,
       options: plans.map((plan) => ({
-        value: plan.name,
+        value: plan.id, // Use plan.id as value, not plan.name
         label: `${plan.name} - $${plan.price.toFixed(2)}/${plan.duration}`,
       })),
     },
-    { name: "phone", label: "Phone" },
+    { name: "phone", label: "Phone", placeholder: "e.g. +1234567890" },
     { name: "join_date", label: "Join Date", type: "date" },
     { name: "expiry_date", label: "Expire Date", type: "date" },
-    { name: "notes", label: "Notes" },
-    { name: "actions", label: "Actions" },
+    { name: "notes", label: "Notes", placeholder: "Additional information" },
+    { name: "actions", label: "Actions", placeholder: "Optional actions" },
   ], [plans, plansLoading]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.name) {
+    notifyWarning("Name is required");
+    return;
+    }
+
+    if (!formData.plan_id) {
+      notifyWarning("Please select a plan");
+      return;
+    }
+    if (!formData.join_date) {
+      notifyWarning("Please select a join date");
+      return;
+    }
+    if (!formData.expiry_date) {
+      notifyWarning("Please select an expiry date");
+      return;
+    }
     const payload = {
       ...formData,
-      age: Number(formData.age),
+      age: formData.age ? Number(formData.age) : null,
+      // Ensure plan_id is sent as number or null
+      plan_id: formData.plan_id ? Number(formData.plan_id) : null,
     };
 
     if (editingItem) {
-      updateItem(editingItem.id, payload);
+      await updateItem(editingItem.id, payload);
+      notifySuccess("Member updated successfully");
     } else {
-      addItem(payload);
+      await addItem(payload);
+      notifySuccess("Member added successfully");
     }
   };
 
-  const handleEdit = (item) => openEdit(item, EMPTY_MEMBER);
+  const handleEdit = (item) => {
+    // Transform the item to match form structure
+    const editData = {
+      ...EMPTY_MEMBER,
+      ...item,
+      plan_id: item.plan?.id || item.plan_id || "", // Handle both possible structures
+    };
+    openEdit(editData, EMPTY_MEMBER);
+  };
 
-  // NEW: Handle weight column click
   const handleWeightClick = (item) => {
     setWeightMember(item);
   };
+
+  // Transform items for display to show plan name
+  const displayItems = items.map(item => ({
+    ...item,
+    plan: item.plan?.name || item.plan_name || "No Plan", // Display plan name
+  }));
 
   return (
     <>
       <DataTable
         title="MEMBERS MANAGEMENT"
         columns={MEMBER_COLUMNS}
-        data={items}
+        data={displayItems} // Use transformed items
         loading={loading}
         search={search}
         setSearch={setSearch}
@@ -134,7 +172,6 @@ export default function Members() {
         onEdit={handleEdit}
         onDelete={(item, name) => deleteItem(item.id, name)}
         onAdd={() => openAdd(EMPTY_MEMBER)}
-        // NEW: Pass click handler for weight column
         onRowClick={(item, columnKey) => {
           if (columnKey === "weight") {
             handleWeightClick(item);
@@ -154,7 +191,6 @@ export default function Members() {
         />
       )}
 
-      {/* NEW: Weight Calendar Card Modal */}
       {weightMember && (
         <WeightCalendarCard
           member={weightMember}

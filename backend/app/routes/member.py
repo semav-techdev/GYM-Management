@@ -14,7 +14,7 @@ def create_member(member: MemberCreate, db: Session = Depends(get_db)):
     new_member = Member(
         name=member.name,
         age=member.age,
-        plan=member.plan,
+        plan_id=member.plan_id,
         join_date=member.join_date,
         expiry_date=member.expiry_date,
         phone=member.phone,
@@ -63,3 +63,18 @@ def delete_member(id: int, db: Session = Depends(get_db)):
     db.commit()
 
     return {"message": "deleted"}
+
+
+@router.get("/debug")
+def debug(db: Session = Depends(get_db)):
+    members = db.query(Member).all()
+
+    return [
+        {
+            "id": m.id,
+            "name": m.name,
+            "plan_id": m.plan_id,
+            "plan_id_type": str(type(m.plan_id))
+        }
+        for m in members
+    ]

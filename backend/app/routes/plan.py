@@ -10,9 +10,11 @@ router = APIRouter(prefix="/plans")
 
 
 @router.get("/", response_model=list[PlanResponse])
-def get_plans(db: Session = Depends(get_db)):
-    return db.query(Plan).all()
-
+def get_plans(active_only: bool = False, db: Session = Depends(get_db)):
+    query = db.query(Plan)
+    if active_only:
+        query = query.filter(Plan.is_active == True)
+    return query.all()
 
 @router.get("/active", response_model=list[PlanResponse])
 def get_active_plans(db: Session = Depends(get_db)):
@@ -58,10 +60,25 @@ def toggle_plan(id: int, db: Session = Depends(get_db)):
 
 @router.delete("/{id}")
 def delete_plan(id: int, db: Session = Depends(get_db)):
+    from app.models.member import Member
+    
     db_plan = db.query(Plan).filter(Plan.id == id).first()
 
     if not db_plan:
         raise HTTPException(status_code=404, detail="Plan not found")
+    
+    # Check if there are members using this plan
+    members_using_plan = db.query(Member).filter(Member.plan_id == id).all()
+    
+    if members_using_plan:
+        raise HTTPException(
+            status_code=409, 
+            detail={
+                "message": "Cannot delete plan with active members",
+                "members_count": len(members_using_plan),
+                "members": [{"id": m.id, "name": m.name} for m in members_using_plan]
+            }
+        )
 
     db.delete(db_plan)
     db.commit()
