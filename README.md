@@ -6,6 +6,10 @@ The application helps gym administrators manage members, staff, equipment, plan 
 
 ---
 
+# 🎥 Demo Video:
+
+[Watch Here](./demo/dashboard.mp4)
+
 ## 🚀 Features
 
 ### 👥 Member Management
@@ -19,10 +23,10 @@ The application helps gym administrators manage members, staff, equipment, plan 
 
 ### 👨‍💼 Staff Management
 
-- Add staffs
+- Add staff members
 - Edit staff information
 - Remove staff records
-- Track staff details
+- Track member weight progress monthly
 
 ### 🏋️ Equipment Management
 
@@ -33,8 +37,8 @@ The application helps gym administrators manage members, staff, equipment, plan 
 
 ### 🚀 Plan & Price
 
-- Add plans & price
-- Edit and Delete plans
+- Create membership plans and pricing
+- Edit and delete plans
 
 ### 🔐 Authentication
 
@@ -216,13 +220,8 @@ DATABASE_URL=sqlite:///gym_dashboard.db
 
 ---
 
-# 📸 Demo video
-
-![](./demo/dashboard.mp4)
-
 # 🎯 Future Improvements
 
-- Membership Plans
 - QR Code Check-In
 - Payment Management
 - Reports & Analytics
