@@ -110,6 +110,32 @@ GYM-Management/
 └── README.md
 ```
 
+## 📸 Screenshots
+
+### Dashboard
+
+![Dashboard](./demo/dashboard1%20.png)
+
+### Staff Management
+
+![](./demo/dashboard2.png)
+
+### Members Management
+
+![Members](./demo/dashboard4.png)
+
+### Track Members Weight
+
+![](./demo/trackweight.png)
+
+### Equipment Management
+
+![](./demo/dashboard5.png)
+
+### Plans Management
+
+![Plans](./demo/dashboard6.png)
+
 ---
 
 # ⚙️ Installation
