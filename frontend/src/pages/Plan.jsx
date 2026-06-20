@@ -14,9 +14,8 @@ export default function Plans() {
     duration: "monthly",
     description: "",
   });
-  const [showMembersModal, setShowMembersModal] = useState(false);
+  const [showPlanWarning, setShowPlanWarning] = useState(false);
   const [membersUsingPlan, setMembersUsingPlan] = useState([]);
-
   useEffect(() => {
     loadPlans();
   }, []);
@@ -68,23 +67,20 @@ export default function Plans() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure?")) return;
-    try {
-      await planService.delete(id);
-      loadPlans();
-    } catch (error) {
-      console.error("Failed to delete:", error);
-      
-      // Check if error is due to members using the plan
-      if (error.response?.status === 409 && error.response?.data?.detail?.members) {
-        const errorDetail = error.response.data.detail;
-        setMembersUsingPlan(errorDetail.members || []);
-        setShowMembersModal(true);
-      } else {
-        alert("Failed to delete plan");
-      }
-    }
-  };
+  if (!window.confirm("Are you sure?")) return;
+
+  try {
+    await planService.delete(id);
+    console.log(planService.delete(id));
+    loadPlans();
+  } catch (error) {
+    console.error("Failed to delete:", error);
+
+    if (error.response?.status === 409) {
+      setMembersUsingPlan(error.response.data.detail.members || []);
+      setShowPlanWarning(true);
+    } }
+};
 
   const handleToggle = async (id) => {
     try {
@@ -121,7 +117,8 @@ export default function Plans() {
           />
         </div>
       </div>
-
+    
+{/* show members if exist */}
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-white text-3xl mb-8">PLAN & PRICE MANAGEMENT</h1>
         
@@ -136,7 +133,7 @@ export default function Plans() {
           {filteredPlans.map((plan) => (
             <div
               key={plan.id}
-              className={`border rounded-lg p-4 flex h-full min-h-56 flex-col ${
+              className={`rounded p-4 flex h-full min-h-56 flex-col ${
                 plan.is_active ? "bg-white" : "bg-gray-100 opacity-60"
               }`}
             >
@@ -153,7 +150,7 @@ export default function Plans() {
                 </span>
               </div>
               
-              <div className="text-2xl font-bold text-blue-600 mb-1">
+              <div className="text-2xl font-bold text-red-900 mb-1">
                 ${plan.price.toFixed(2)}
               </div>
               <div className="text-sm text-gray-500 mb-2 capitalize">
@@ -167,7 +164,7 @@ export default function Plans() {
               <div className="flex gap-2 mt-auto pt-3">
                 <button
                   onClick={() => handleEdit(plan)}
-                  className="flex-1 bg-blue-500 text-white text-sm py-1 rounded hover:bg-blue-600"
+                  className="flex-1 bg-red-900 text-white text-sm py-1 rounded hover:bg-red-600"
                 >
                   Edit
                 </button>
@@ -193,41 +190,11 @@ export default function Plans() {
         </div>
       )}
 
-      {/* Members Using Plan Modal */}
-      {showMembersModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
-            <h2 className="text-xl font-bold mb-4 text-red-600">Cannot Delete Plan</h2>
-            <p className="text-gray-700 mb-4">
-              This plan cannot be deleted because the following members are using it:
-            </p>
-            
-            <div className="space-y-2 mb-4">
-              {membersUsingPlan.map((member) => (
-                <div
-                  key={member.id}
-                  className="bg-gray-100 p-3 rounded border-l-4 border-red-500"
-                >
-                  <p className="font-medium text-gray-800">{member.name}</p>
-                  <p className="text-sm text-gray-500">ID: {member.id}</p>
-                </div>
-              ))}
-            </div>
-            
-            <button
-              onClick={() => setShowMembersModal(false)}
-              className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">     
+          <div className="bg-gradient-to-br from-red-50 to-red-900 border-red-200 rounded-lg p-6 w-full max-w-md
+                animate-in fade-in zoom-in-95 duration-200">           
             <h2 className="text-xl font-bold mb-4">
               {editingPlan ? "Edit Plan" : "Add Plan"}
             </h2>
@@ -286,7 +253,7 @@ export default function Plans() {
               <div className="flex gap-2 mt-4">
                 <button
                   type="submit"
-                  className="flex-1 bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+                  className="flex-1 bg-red-900 text-white py-2 rounded hover:bg-red-600"
                 >
                   {editingPlan ? "Update" : "Create"}
                 </button>
@@ -309,10 +276,53 @@ export default function Plans() {
                     setFormData({ name: "", price: "", duration: "monthly", description: "" });
                     setIsModalOpen(true);
                 }}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                className="bg-red-900  px-4 py-2 rounded-2xl text-white border border-rose-50 hover:bg-red-800">
           + Add Plan
         </button>
       </div>
+      {showPlanWarning && (
+          <div
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50"
+            onClick={() => setShowPlanWarning(false)}
+          >
+            <div
+              className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-xl font-bold text-red-600 mb-2">
+                Cannot Delete Plan
+              </h3>
+
+              <p className="text-gray-600 mb-4">
+                This plan is currently assigned to
+                <span className="font-semibold">
+                  {" "}
+                  {membersUsingPlan.length}
+                </span>{" "}
+                member(s):
+              </p>
+
+              <div className="max-h-48 overflow-y-auto space-y-2 mb-4">
+                {membersUsingPlan.map((member) => (
+                  <div
+                    key={member.id}
+                    className="bg-gray-100 p-3 rounded-lg"
+                  >
+                    👤 {member.name}
+                  </div>
+                ))}
+              </div>
+
+              <button
+                onClick={() => setShowPlanWarning(false)}
+                className="w-full bg-red-900 text-white py-2 rounded-lg hover:bg-red-700"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
     </div>
+    
   );
 }
