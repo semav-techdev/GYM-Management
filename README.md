@@ -2,7 +2,7 @@
 
 A modern desktop-based Gym Management System built with React, FastAPI, and Electron.
 
-The application helps gym administrators manage members, staff, equipment, and daily operations through a fast, responsive, and user-friendly interface.
+The application helps gym administrators manage members, staff, equipment, plan and daily operations through a fast, responsive, and user-friendly interface.
 
 ---
 
@@ -15,11 +15,12 @@ The application helps gym administrators manage members, staff, equipment, and d
 - Delete members
 - Search and filter members
 - View detailed member records
+- Track members weight monthly
 
 ### 👨‍💼 Staff Management
 
-- Create staff profiles
-- Edit employee information
+- Add staffs
+- Edit staff information
 - Remove staff records
 - Track staff details
 
@@ -29,6 +30,11 @@ The application helps gym administrators manage members, staff, equipment, and d
 - Update equipment information
 - Remove equipment
 - Monitor inventory
+
+### 🚀 Plan & Price
+
+- Add plans & price
+- Edit and Delete plans
 
 ### 🔐 Authentication
 
@@ -48,6 +54,8 @@ The application helps gym administrators manage members, staff, equipment, and d
 - Cross-platform desktop support
 - Native application experience
 
+### Web Application
+
 ---
 
 # 🛠️ Tech Stack
@@ -58,9 +66,7 @@ The application helps gym administrators manage members, staff, equipment, and d
 - Vite
 - Tailwind CSS
 - shadcn/ui
-- Radix UI
 - Zustand
-- TanStack Query
 - Axios
 - React Router DOM
 - Lucide React
@@ -210,34 +216,16 @@ DATABASE_URL=sqlite:///gym_dashboard.db
 
 ---
 
-# 📸 Screenshots
+# 📸 Demo video
 
-## Dashboard
-
-_Add screenshot here_
-
-## Members Management
-
-_Add screenshot here_
-
-## Staff Management
-
-_Add screenshot here_
-
-## Equipment Management
-
-_Add screenshot here_
-
----
+![](./demo/dashboard.mp4)
 
 # 🎯 Future Improvements
 
 - Membership Plans
-- Attendance Tracking
 - QR Code Check-In
 - Payment Management
 - Reports & Analytics
-- Notifications System
 - Role-Based Access Control
 - PostgreSQL Support
 
@@ -249,7 +237,7 @@ _Add screenshot here_
 
 Computer & Automation Engineer
 
-Frontend & Full-Stack Developer
+React Frontend & Python Backend Developer
 
 GitHub:
 
