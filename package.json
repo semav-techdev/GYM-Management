@@ -12,7 +12,7 @@
     "build": "npm run build --prefix frontend"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1",
+    "concurrently": "^9.2.3",
     "cross-env": "^10.1.0",
     "electron": "^38.8.6",
     "electron-builder": "^26.8.1",
@@ -192,7 +192,7 @@
     "serialize-error": "^7.0.1",
     "shebang-command": "^2.0.0",
     "shebang-regex": "^3.0.0",
-    "shell-quote": "^1.8.3",
+    "shell-quote": "^1.8.4",
     "signal-exit": "^3.0.7",
     "simple-update-notifier": "^2.0.0",
     "source-map": "^0.6.1",
